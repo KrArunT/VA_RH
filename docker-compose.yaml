@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  whisper-transcriber:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    entrypoint: ["python3", "main.py", "lisa.mp4"]
+
+  vllm-server:
+    image: vllm-cpu-env
+    privileged: true
+    shm_size: 4g
+    cpuset: "0-31,299-330"
+    ports:
+      - "15000:8000"
+    volumes:
+      - ~/.cache/huggingface:/root/.cache/huggingface
+    environment:
+      - HUGGING_FACE_HUB_TOKEN=<>
+    command: >
+      --model deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B
+      --dtype bfloat16
