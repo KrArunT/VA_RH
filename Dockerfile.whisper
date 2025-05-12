@@ -1,21 +1,15 @@
-# Use official lightweight Python image
-FROM python:3.10-slim
+FROM python:3.9-slim
 
-# Set working directory
 WORKDIR /app
 
-# Install system dependencies including FFmpeg
+# Install system dependencies including ffmpeg and git
 RUN apt-get update && \
     apt-get install -y ffmpeg git && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Install Python packages and Whisper from GitHub
+# Install Python packages
 RUN pip install --upgrade pip && \
-    pip install git+https://github.com/openai/whisper.git yt-dlp requests
+    pip install git+https://github.com/openai/whisper.git
 
-# Copy your application code (example: main.py)
 COPY main.py /app/
-
-# Set default command to run your script
-CMD ["python3", "main.py"]
