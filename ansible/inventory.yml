@@ -1,0 +1,6 @@
+all:
+  hosts:
+    server1:
+      ansible_host: va_amd
+    server2:
+      ansible_host: va_intel
