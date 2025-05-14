@@ -1,0 +1,25 @@
+---
+- name: Kill Python script screen sessions on servers
+  hosts: all
+  gather_facts: false
+  tasks:
+
+    - name: Kill screen session on server1
+      when: inventory_hostname == "server1"
+      shell: |
+        if screen -list | grep -q "intel-demo"; then
+          screen -S intel-demo -X quit
+          echo "✅ Killed intel-demo session"
+        else
+          echo "⚠ No intel-demo session found"
+        fi
+
+    - name: Kill screen session on server2
+      when: inventory_hostname == "server2"
+      shell: |
+        if screen -list | grep -q "amd-demo"; then
+          screen -S amd-demo -X quit
+          echo "✅ Killed amd-demo session"
+        else
+          echo "⚠ No amd-demo session found"
+        fi
