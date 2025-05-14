@@ -1,0 +1,31 @@
+---
+- name: Run Python scripts on different servers
+  hosts: all
+  gather_facts: true
+  tasks:
+
+    - name: Copy pub_va.py to server1
+      when: inventory_hostname == "server1"
+      copy:
+        src: "./src_intel/pub_va.py"
+        dest: "{{ ansible_env.HOME }}/workspace/va_deployment/src_intel/"
+        mode: '0755'
+
+    - name: Copy pub_va.py to server2
+      when: inventory_hostname == "server2"
+      copy:
+        src: "./src_amd/pub_va.py"
+        dest: "{{ ansible_env.HOME }}/workspace/va_deployment/"
+        mode: '0755'
+
+    - name: Run pub_va.py on server1 inside screen session with virtualenv
+      when: inventory_hostname == "server1"
+      shell: |
+        cd ~/workspace/va_deployment
+        screen -dmS intel-demo bash -c 'source env/bin/activate && python src_intel/pub_va.py'
+
+    - name: Run pub_va.py on server2 inside screen session with virtualenv
+      when: inventory_hostname == "server2"
+      shell: |
+        cd ~/workspace/va_deployment
+        screen -dmS amd-demo bash -c 'source env/bin/activate && python pub_va.py'
